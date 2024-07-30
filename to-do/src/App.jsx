@@ -30,9 +30,19 @@ function App() {
 
     //To toggle the completed task for line-through component.
     newAddedTask[index].isCompleted = !newAddedTask[index].isCompleted;
-    
+
     setAddedTasks(newAddedTask);
   };
+
+  //Delete the task permenantly
+  const handleDelete = (work, id) => {
+  
+    let newAddedTask = addedTasks.filter(item => {
+      return item.id !== id;
+    });
+    
+    setAddedTasks(newAddedTask);
+  }
 
   return (
     <>
@@ -51,17 +61,20 @@ function App() {
               onClick={handleAdd}
               className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-7"
             >
-              Add
+              Save
             </button>
           </div>
           <h2 className="text-xl font-semibold my-5">Your Tasks</h2>
 
           <div className="todos">
+            {addedTasks.length === 0 && <div className="m-4">No Tasks to display</div>}
+
             {/* To map all the added tasks and display them in your task section */}
             {addedTasks.map((item) => {
               return (
                 <>
                   <div key={item.id} className="todo flex justify-between my-2">
+                    <div className="flex gap-3 ">
                     <input
                       name={item.id}
                       onChange={handleCheckBox}
@@ -71,11 +84,13 @@ function App() {
                     <div className={item.isCompleted ? "line-through" : ""}>
                       {item.task}{" "}
                     </div>
+                    </div>
+                    
                     <div className="buttons">
                       <button className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-2">
                         Edit
                       </button>
-                      <button className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-2">
+                      <button onClick={(work) => handleDelete(work , item.id)} className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-2">
                         Delete
                       </button>
                     </div>
