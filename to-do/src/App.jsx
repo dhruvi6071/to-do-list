@@ -44,6 +44,19 @@ function App() {
     setAddedTasks(newAddedTask);
   }
 
+  //Edit the selected task.
+  const handleEdit = (work, id) => {
+    let t = addedTasks.filter(i=> i.id === id);
+    setTask(t[0].task);
+
+    let newAddedTask = addedTasks.filter(item => {
+      return item.id !== id;
+    });
+    
+    setAddedTasks(newAddedTask);
+    
+  }
+
   return (
     <>
       <Navbar />
@@ -87,7 +100,7 @@ function App() {
                     </div>
                     
                     <div className="buttons">
-                      <button className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-2">
+                      <button onClick={(work) => handleEdit(work, item.id)} className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-2">
                         Edit
                       </button>
                       <button onClick={(work) => handleDelete(work , item.id)} className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-2">
