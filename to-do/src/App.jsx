@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import Navbar from "./component/Navbar";
 import { v4 as uuidv4 } from "uuid";
+import { useLocation, useNavigate } from "react-router-dom";
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 function App() {
   const [task, setTask] = useState("");
@@ -8,7 +13,11 @@ function App() {
   const [showFinish, setShowFinish] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
   const [eventId, setEventId] = useState(null);
-  const [searchTask, setSearchTask] = useState("");
+  // const [searchTask, setSearchTask] = useState("");
+
+  const query = useQuery();
+  const navigate = useNavigate();
+  const searchTask = query.get("search") || "";
 
   //Not to lose data on reload.
   useEffect(() => {
@@ -19,7 +28,7 @@ function App() {
     }
   }, []);
 
-  const saveTask = (params) => {
+  const saveTask = () => {
     localStorage.setItem("addedTasks", JSON.stringify(addedTasks));
   };
 
@@ -40,6 +49,7 @@ function App() {
       ]);
     }
     setTask("");
+    saveTask();
   };
 
   //To empty input field after the task is added.
@@ -66,7 +76,7 @@ function App() {
   };
 
   //Delete the task permenantly
-  const handleDelete = (work, id) => {
+  const handleDelete = (id) => {
     let newAddedTask = addedTasks.filter((item) => {
       return item.id !== id;
     });
@@ -88,10 +98,11 @@ function App() {
     setShowFinish(!showFinish);
   };
 
-   // Handle search term change.
-   const handleSearchChange = (event) => {
-    setSearchTask(event.target.value);
-  };
+ // Handle search term change and update URL.
+ const handleSearchChange = (event) => {
+  const value = event.target.value;
+  navigate(`?search=${value}`);
+};
 
   // Filtered tasks based on search term and showFinish flag.
   const filteredTasks = addedTasks.filter((item) =>
@@ -135,7 +146,7 @@ function App() {
           <h2 className="text-xl font-semibold mt-9 mb-2 text-brown">Your Tasks</h2>
 
           <div className="todos">
-            {addedTasks.length === 0 && (
+            {filteredTasks.length === 0 && (
               <div className="m-4">No Tasks to display</div>
             )}
 
