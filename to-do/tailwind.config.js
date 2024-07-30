@@ -6,8 +6,10 @@ export default {
     colors: {
       pink: '#A87676',
       white: '#ffffff',
-      violet:'#F1E5D1',
+      violet:'#F5EEE6',
       hoverpink:'#987070',
+      disable:'#C39898',
+      brown: '#3E3232'
     },
     extend: {},
   },

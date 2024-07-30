@@ -1,14 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./component/Navbar";
 import { v4 as uuidv4 } from "uuid";
 
 function App() {
   const [task, setTask] = useState("");
   const [addedTasks, setAddedTasks] = useState([]);
+  const [showFinish, setShowFinish] = useState(true);
+  const [isEdit, setIsEdit] = useState(false);
+  const [eventId, setEventId] = useState(null);
 
-  //To add a new task.
-  const handleAdd = () => {
-    setAddedTasks([...addedTasks, { id: uuidv4(), task, isCompleted: false }]);
+  //Not to lose data on reload.
+  useEffect(() => {
+    let taskString = localStorage.getItem("addedTasks");
+    if (taskString) {
+      let addedTasks = JSON.parse(localStorage.getItem("addedTasks"));
+      setAddedTasks(addedTasks);
+    }
+  }, []);
+
+  const saveTask = (params) => {
+    localStorage.setItem("addedTasks", JSON.stringify(addedTasks));
+  };
+
+  // To add a new task or save an edited task.
+  const handleAddOrSave = () => {
+    if (isEdit) {
+      setAddedTasks((prevTasks) =>
+        prevTasks.map((item) =>
+          item.id === eventId ? { ...item, task } : item
+        )
+      );
+      setIsEdit(false);
+      setEventId(null);
+    } else {
+      setAddedTasks((prevTasks) => [
+        ...prevTasks,
+        { id: uuidv4(), task, isCompleted: false },
+      ]);
+    }
     setTask("");
   };
 
@@ -26,44 +55,46 @@ function App() {
     });
 
     //It is must to get a new array and set checked tasks.
-    let newAddedTask = [...addedTasks]; 
+    let newAddedTask = [...addedTasks];
 
     //To toggle the completed task for line-through component.
     newAddedTask[index].isCompleted = !newAddedTask[index].isCompleted;
 
     setAddedTasks(newAddedTask);
+    saveTask();
   };
 
   //Delete the task permenantly
   const handleDelete = (work, id) => {
-  
-    let newAddedTask = addedTasks.filter(item => {
+    let newAddedTask = addedTasks.filter((item) => {
       return item.id !== id;
     });
-    
+
     setAddedTasks(newAddedTask);
-  }
+    saveTask();
+  };
 
   //Edit the selected task.
-  const handleEdit = (work, id) => {
-    let t = addedTasks.filter(i=> i.id === id);
-    setTask(t[0].task);
+  const handleEdit = (id) => {
+    const taskToEdit = addedTasks.find((item) => item.id === id);
+    setTask(taskToEdit.task);
+    setIsEdit(true);
+    setEventId(id);
+  };
 
-    let newAddedTask = addedTasks.filter(item => {
-      return item.id !== id;
-    });
-    
-    setAddedTasks(newAddedTask);
-    
-  }
+  //To see only remaining tasks.
+  const toggleFinish = () => {
+    setShowFinish(!showFinish);
+  };
 
+  // Given condition is applied to only show remaining tasks only.
   return (
     <>
       <Navbar />
       <div className="container mx-auto my-5 rounded-xl p-5 bg-violet min-h-screen">
-        <div className="">
+        <div className="font-bold text-center text-3xl text-brown"> To-do : Manage your tasks. </div>
           <div className="addToDo">
-            <h2 className="text-xl font-semibold my-1">Add a Task</h2>
+            <h2 className="text-xl font-semibold my-5 text-brown">Add a Task</h2>
             <input
               onChange={handleChange}
               value={task}
@@ -71,49 +102,64 @@ function App() {
               className="w-1/3"
             />
             <button
-              onClick={handleAdd}
-              className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-7"
+              onClick={handleAddOrSave}
+              disabled={task.length < 3}
+              className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-7 disabled:bg-disable"
             >
-              Save
+              {isEdit ? "Save" : "Add"}
             </button>
           </div>
-          <h2 className="text-xl font-semibold my-5">Your Tasks</h2>
+          <input onChange={toggleFinish} type="checkbox" checked={showFinish} />
+          <label htmlFor=""> Show completed</label>
+          <h2 className="text-xl font-semibold mt-9 mb-2 text-brown">Your Tasks</h2>
 
           <div className="todos">
-            {addedTasks.length === 0 && <div className="m-4">No Tasks to display</div>}
+            {addedTasks.length === 0 && (
+              <div className="m-4">No Tasks to display</div>
+            )}
 
             {/* To map all the added tasks and display them in your task section */}
             {addedTasks.map((item) => {
               return (
-                <>
-                  <div key={item.id} className="todo flex justify-between my-2">
-                    <div className="flex gap-3 ">
-                    <input
-                      name={item.id}
-                      onChange={handleCheckBox}
-                      type="checkbox"
-                      value={item.isCompleted}
-                    />
-                    <div className={item.isCompleted ? "line-through" : ""}>
-                      {item.task}{" "}
+                (showFinish || !item.isCompleted) && (
+                  <>
+                    <div
+                      key={item.id}
+                      className="todo flex justify-between my-2"
+                    >
+                      <div className="flex gap-3 ">
+                        <input
+                          name={item.id}
+                          onChange={handleCheckBox}
+                          type="checkbox"
+                          checked={item.isCompleted}
+                        />
+                        <div className={item.isCompleted ? "line-through" : ""}>
+                          {item.task}{" "}
+                        </div>
+                      </div>
+
+                      <div className="buttons flex">
+                        <button
+                          onClick={() => handleEdit(item.id)}
+                          className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-2"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={(work) => handleDelete(work, item.id)}
+                          className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-2"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
-                    </div>
-                    
-                    <div className="buttons">
-                      <button onClick={(work) => handleEdit(work, item.id)} className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-2">
-                        Edit
-                      </button>
-                      <button onClick={(work) => handleDelete(work , item.id)} className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-2">
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </>
+                  </>
+                )
               );
             })}
           </div>
         </div>
-      </div>
     </>
   );
 }
