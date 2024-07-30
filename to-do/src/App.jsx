@@ -1,19 +1,37 @@
 import { useState } from "react";
 import Navbar from "./component/Navbar";
+import { v4 as uuidv4 } from "uuid";
 
 function App() {
   const [task, setTask] = useState("");
-  const [addedTaks, setAddedTasks] = useState([]);
+  const [addedTasks, setAddedTasks] = useState([]);
 
   //To add a new task.
   const handleAdd = () => {
-    setAddedTasks([...addedTaks, { task, isCompleted: false }]);
+    setAddedTasks([...addedTasks, { id: uuidv4(), task, isCompleted: false }]);
     setTask("");
   };
 
   //To empty input field after the task is added.
   const handleChange = (work) => {
     setTask(work.target.value);
+  };
+
+  //To check-out the completed tasks.
+  const handleCheckBox = (work) => {
+    let id = work.target.name;
+
+    let index = addedTasks.findIndex((item) => {
+      return item.id === id;
+    });
+
+    //It is must to get a new array and set checked tasks.
+    let newAddedTask = [...addedTasks]; 
+
+    //To toggle the completed task for line-through component.
+    newAddedTask[index].isCompleted = !newAddedTask[index].isCompleted;
+    
+    setAddedTasks(newAddedTask);
   };
 
   return (
@@ -39,11 +57,20 @@ function App() {
           <h2 className="text-xl font-semibold my-5">Your Tasks</h2>
 
           <div className="todos">
-            {addedTaks.map((item) => {
+            {/* To map all the added tasks and display them in your task section */}
+            {addedTasks.map((item) => {
               return (
                 <>
-                  <div key={task} className="todo flex justify-between my-2">
-                    <div className="text">{item.task} </div>
+                  <div key={item.id} className="todo flex justify-between my-2">
+                    <input
+                      name={item.id}
+                      onChange={handleCheckBox}
+                      type="checkbox"
+                      value={item.isCompleted}
+                    />
+                    <div className={item.isCompleted ? "line-through" : ""}>
+                      {item.task}{" "}
+                    </div>
                     <div className="buttons">
                       <button className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-2">
                         Edit
