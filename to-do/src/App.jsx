@@ -8,6 +8,7 @@ function App() {
   const [showFinish, setShowFinish] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
   const [eventId, setEventId] = useState(null);
+  const [searchTask, setSearchTask] = useState("");
 
   //Not to lose data on reload.
   useEffect(() => {
@@ -87,6 +88,17 @@ function App() {
     setShowFinish(!showFinish);
   };
 
+   // Handle search term change.
+   const handleSearchChange = (event) => {
+    setSearchTask(event.target.value);
+  };
+
+  // Filtered tasks based on search term and showFinish flag.
+  const filteredTasks = addedTasks.filter((item) =>
+    item.task.toLowerCase().includes(searchTask.toLowerCase()) &&
+    (showFinish || !item.isCompleted)
+  );
+
   // Given condition is applied to only show remaining tasks only.
   return (
     <>
@@ -109,6 +121,15 @@ function App() {
               {isEdit ? "Save" : "Add"}
             </button>
           </div>
+          <div className="my-4">
+            <input
+              onChange={handleSearchChange}
+              value={searchTask}
+              type="text"
+              placeholder="Search tasks..."
+              className="w-1/3 p-2"
+            />
+          </div>
           <input onChange={toggleFinish} type="checkbox" checked={showFinish} />
           <label htmlFor=""> Show completed</label>
           <h2 className="text-xl font-semibold mt-9 mb-2 text-brown">Your Tasks</h2>
@@ -119,7 +140,7 @@ function App() {
             )}
 
             {/* To map all the added tasks and display them in your task section */}
-            {addedTasks.map((item) => {
+            {filteredTasks.map((item) => {
               return (
                 (showFinish || !item.isCompleted) && (
                   <>
