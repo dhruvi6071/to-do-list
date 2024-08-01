@@ -29,7 +29,7 @@ Follow these steps to get the project running on your local machine:
 
 1. **Clone the repository**:  
    ```bash
-   git clone https://github.com/yourusername/todo-app.git
+   git clone https://github.com/dhruvi6071/todo-app.git
    ```
 
 2. **Navigate into the project directory**:  
