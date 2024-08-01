@@ -5,7 +5,7 @@ import ToggleFinish from "./ToggleFinish";
 
 function SearchBar({ searchTask, handleSearchChange, toggleFinish, showFinish }) {
   return (
-    <div className="my-4">
+    <div className="">
       <SearchInput searchTask={searchTask} handleSearchChange={handleSearchChange} />
       <ToggleFinish toggleFinish={toggleFinish} showFinish={showFinish} />
     </div>

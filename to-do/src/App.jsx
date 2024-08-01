@@ -14,7 +14,7 @@ function App() {
   const [task, setTask] = useState("");
   const [description, setDescription] = useState("");
   const [addedTasks, setAddedTasks] = useState([]);
-  const [showFinish, setShowFinish] = useState(true);
+  const [showFinish, setShowFinish] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [eventId, setEventId] = useState(null);
   const [expandedTask, setExpandedTask] = useState(null);
@@ -109,35 +109,54 @@ function App() {
 
   return (
     <>
-      <Navbar />
-      <div className="container mx-11 my-5 rounded-xl p-5 bg-violet min-h-screen">
-        <div className="font-bold text-center text-3xl text-brown">
-          To-do : Manage your tasks.
+      {/* <Navbar /> */}
+      <div className="container mx-11 my-5 rounded-xl p-5 bg-violet min-h-screen drop-shadow-lg">
+        <div className="inline-flex">
+          <div className="font-bold text-center text-3xl text-brown ml-96">To-do : Manage your tasks.</div>
+         
+          <div >
+            <SearchBar
+              searchTask={searchTask}
+              handleSearchChange={handleSearchChange}
+              toggleFinish={toggleFinish}
+              showFinish={showFinish}
+          
+            />
+          </div>
         </div>
-        <TaskInput
-          task={task}
-          description={description}
-          handleChangeTask={handleChangeTask}
-          handleChangeDescription={handleChangeDescription}
-          handleAddOrSave={handleAddOrSave}
-          isEdit={isEdit}
-        />
-        <SearchBar
-          searchTask={searchTask}
-          handleSearchChange={handleSearchChange}
-          toggleFinish={toggleFinish}
-          showFinish={showFinish}
-        />
-        <h2 className="text-xl font-semibold mt-9 mb-2 text-brown">Your Tasks</h2>
-        <TaskList
-          filteredTasks={filteredTasks}
-          handleCheckBox={handleCheckBox}
-          handleEdit={handleEdit}
-          handleDelete={handleDelete}
-          toggleExpand={toggleExpand}
-          expandedTask={expandedTask}
-          showFinish={showFinish}
-        />
+        <div className="h-screen my-8 flex gap-8">
+          <div className="bg-pink w-1/4 rounded-md">
+            <TaskInput
+              task={task}
+              description={description}
+              handleChangeTask={handleChangeTask}
+              handleChangeDescription={handleChangeDescription}
+              handleAddOrSave={handleAddOrSave}
+              isEdit={isEdit}
+            />
+          </div>
+          <div className="inline-block">
+            <div className="inline-flex justify-center">
+              <div className="">
+                <h2 className="text-xl font-semibold mt-9 mb-9 ml-32  text-brown">
+                  Your Tasks
+                </h2>
+              </div>
+              <div className=""></div>
+            </div>
+            <div>
+              <TaskList
+                filteredTasks={filteredTasks}
+                handleCheckBox={handleCheckBox}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+                toggleExpand={toggleExpand}
+                expandedTask={expandedTask}
+                showFinish={showFinish}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

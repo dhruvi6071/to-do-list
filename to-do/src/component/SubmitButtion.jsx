@@ -6,7 +6,7 @@ function SubmitButton({ handleAddOrSave, task, isEdit }) {
     <button
       onClick={handleAddOrSave}
       disabled={task.length < 3}
-      className="bg-pink hover:bg-hoverpink p-3 py-1 text-white text-sm rounded-md mx-7 disabled:bg-disable mt-5 ml-1"
+      className="bg-violet hover:bg-disable p-3 py-1 text-brown text-sm rounded-md mx-7 disabled:bg-disable mt-5 ml-36"
     >
       {isEdit ? "Save" : "Add"}
     </button>

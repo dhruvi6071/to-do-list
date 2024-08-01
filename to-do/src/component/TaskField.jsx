@@ -3,13 +3,13 @@ import React from "react";
 
 function TaskField({ task, handleChangeTask }) {
   return (
-    <div>
+    <div className="ml-10">
       <input
         onChange={handleChangeTask}
         value={task}
         type="text"
         placeholder="Add task"
-        className="w-1/3 p-3 rounded-md"
+        className="w-10/12 p-3 rounded-md "  
       />
     </div>
   );

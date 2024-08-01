@@ -7,7 +7,7 @@ import TaskDetails from "./TaskDetail";
 function TaskItem({ item, handleCheckBox, handleEdit, handleDelete, toggleExpand, expandedTask }) {
   return (
     <>
-      <div className="todo flex justify-between my-2">
+      <div className="todo justify-between flex ml-3 mr-28 my-2">
         <div className="flex gap-3">
           <TaskCheckbox item={item} handleCheckBox={handleCheckBox} />
           <TaskContent item={item} toggleExpand={toggleExpand} expandedTask={expandedTask} />

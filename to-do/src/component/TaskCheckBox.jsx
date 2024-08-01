@@ -2,6 +2,7 @@ import React from "react";
 
 function TaskCheckbox({ item, handleCheckBox }) {
   return (
+    
     <input
       name={item.id}
       onChange={handleCheckBox}
